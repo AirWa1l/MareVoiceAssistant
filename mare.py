@@ -3,8 +3,7 @@ from identity.information import username
 from speech.speech import speech
 from voiceRecognition import command
 
-def time():
-    #Time = datetime.datetime.now().strftime("%I:%M")
+def hour_of_day():
     hour = datetime.datetime.now().hour
     match hour:
         case _ if hour >= 6 and hour < 12:
@@ -14,7 +13,9 @@ def time():
         case _ if hour >= 18 and hour < 24:
             speech("Buenas noches!")
 
-    #return Time
+def time():
+    Time = datetime.datetime.now().strftime("%I:%M:%S")
+    speech(Time)
 
 def date():
     year = datetime.datetime.now().year
@@ -22,11 +23,10 @@ def date():
     day = datetime.datetime.now().day
     date_time = f"{year}, {month} y {day}"
     # date_time = [year, month, day] es preferible no pasar listas, pyttsx3 procesa solo texto, por eso se daba ese error
-    return date_time
+    speech(date_time)
 
 def greetings():
-    speech(f"{time()} {username}")
-    speech(date())
+    speech(f"{hour_of_day()} {username}")
     speech("En que puedo ayudarte?")
 
 # Por alguna razón esto no funciona como debería, pues pronuncia todo de forma incompleta
@@ -34,4 +34,15 @@ def greetings():
 
 if __name__ == "__main__":
     greetings()
-    command()
+
+    while True:
+        query = command().lower()
+        print(query)
+
+        match query:
+            case _ if "hora" in query:
+                time()
+            case _ if "fecha" in query:
+                date()
+            case _ if "apagate" in query:
+                quit()
